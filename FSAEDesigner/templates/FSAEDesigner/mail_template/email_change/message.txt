@@ -1,0 +1,8 @@
+{{ user.username }} 様
+
+下記URLよりサイトにアクセスすると、メールアドレスの変更が完了します。
+
+{{ protocol}}://{{ domain }}{% url 'FSAEDesigner:email_change_complete' token %}
+
+
+あちゅあや

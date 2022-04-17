@@ -1,0 +1,25 @@
+{% load static %}
+
+{% block scripts %}
+<script src="{% static 'admin-lte/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'admin-lte/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+<script src="{% static 'admin-lte/plugins/chart.js/Chart.min.js' %}"></script>
+<script src="{% static 'FSAEDesigner/js/jquery.ba-throttle-debounce.min.js' %}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+    let default_timeout = 1000000;
+</script>
+<script src="{% static 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js' %} "></script>
+
+{% block datatable_js %}{% endblock %}
+
+<!--<script src="{% static 'admin-lte/dist/js/adminlte.min.js' %}"></script>-->
+<script src="{% static 'admin-lte/dist/js/adminlte.js' %}"></script>
+<script src="{% static 'admin-lte/dist/js/demo.js' %}"></script>
+<script src="{% static 'FSAEDesigner/js/translate_keys.js' %}"></script>
+<script src="{% static 'FSAEDesigner/js/moment-with-locales.js' %}"></script>
+<script src="{% static 'FSAEDesigner/js/moment-timezone-with-data.js' %}"></script>
+<script src="{% static 'FSAEDesigner/js/common.js' %}"></script>
+<!--<script src="{% static 'FSAEDesigner/js/jquery.multilineSelectmenu.js' %}"></script>-->
+{% endblock %}

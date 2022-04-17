@@ -1,0 +1,31 @@
+{% load adminlte_helpers i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    {% block title_outer %}
+    <title>{% block title %}{{title}}{% endblock %} | FSAEDesigner</title>
+    {% endblock %}
+    {% block meta %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    {% endblock %}
+
+    {% block stylesheets %}
+    {% include 'FSAEDesigner/lib/_styles.html' %}
+    {% endblock %}
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="hold-transition sidebar-mini {% block body_class %}{% block bodyclass %}{% endblock %}{% endblock %}">
+    <form id="csrf-form" action="" method="post">
+        {% csrf_token %}
+    </form>
+    {% block body %}
+    {% endblock body %}
+
+    {% block javascript %}
+    {% include 'FSAEDesigner/lib/_scripts.html' %}
+    {% endblock %}
+</body>
+</html>

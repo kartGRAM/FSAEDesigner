@@ -6,6 +6,7 @@ from django.core.signing import BadSignature, SignatureExpired, loads, dumps
 from django.http import HttpResponseBadRequest
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import (
     LoginView, LogoutView,
     PasswordResetView, PasswordResetConfirmView,
@@ -50,7 +51,7 @@ class Login(CommonMixin, LoginView):
     # ログインページ
     title = _("ログイン")
     form_class = LoginForm
-    template_name = 'FSAEDesinger/login.html'
+    template_name = 'FSAEDesigner/login.html'
 
     def post(self, request, *args, **kwargs):
         if not request.POST.get('remember_me', None):
@@ -78,14 +79,14 @@ class PasswordReset(SuccessMessageMixin, PasswordResetView):
 class PasswordResetConfirm(SuccessMessageMixin, PasswordResetConfirmView):
     # 新パスワード入力ページ
     form_class = SetPasswordForm
-    template_name = 'FSAEDesinger/password_reset_confirm.html'
+    template_name = 'FSAEDesigner/password_reset_confirm.html'
     success_url = reverse_lazy('FSAEDesigner:login')
     success_message = _("パスワードが変更されました")
 
 class UserCreate(CommonMixin, SuccessMessageMixin, generic.CreateView):
     title = "新規登録"
     # ユーザー仮登録
-    template_name = 'FSAEDesinger/user_create.html'
+    template_name = 'FSAEDesigner/user_create.html'
     success_url = reverse_lazy('FSAEDesigner:user_create')
     success_message = _("登録用メールを送信しました")
     form_class = UserCreateForm
@@ -150,8 +151,36 @@ def UserCreateComplete(request, token):
 
         return HttpResponseBadRequest()
 
-class Top(CommonMixin, LoginRequiredMixin, generic.RedirectView):
-    title = _("ログイン")
+@login_required
+def EmailChangeComplete(request, token):
+    """メールアドレスが変更されたらログインページへリダイレクトする"""
+    timeout_seconds = getattr(
+        settings, 'ACTIVATION_TIMEOUT_SECONDS', 60*60*1)  # デフォルトでは1日以内
+
+    try:
+        new_email = loads(token, max_age=timeout_seconds)
+
+    # 期限切れ
+    except SignatureExpired:
+        return HttpResponseBadRequest()
+
+    # tokenが間違っている
+    except BadSignature:
+        return HttpResponseBadRequest()
+
+    # tokenは問題なし
+    else:
+        User.objects.filter(email=new_email, is_active=False).delete()
+        request.user.email = new_email
+        request.user.save()
+        messages.success(request, _("メールアドレスが変更されました"))
+        return redirect('FSAEDesigner:login')
+
+class Top(CommonMixin, LoginRequiredMixin, generic.TemplateView):
+    title = _("")
+    template_name = 'FSAEDesigner/top.html'
+    """
     def get(self, request, *args, **kwargs):
         self.url = reverse_lazy('FSAEDesigner:top')
         return super().get(request, *args, **kwargs)
+    """
