@@ -110,7 +110,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'NON_FIELD_ERRORS_KEY': 'detail',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
@@ -125,6 +125,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+LOGIN_REDIRECT_URL = 'FSAEDesigner:top'
+LOGOUT_REDIRECT_URL = 'FSAEDesigner:login'
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
