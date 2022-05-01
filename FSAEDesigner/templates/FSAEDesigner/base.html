@@ -13,19 +13,19 @@
     {% endblock %}
 
     {% block stylesheets %}
-    {% include 'FSAEDesigner/lib/_styles.html' %}
+    {% include 'FSAEDesigner/lib/_auth_styles.html' %}
     {% endblock %}
     {% block extra_head %}{% endblock %}
 </head>
 <body class="hold-transition sidebar-mini {% block body_class %}{% block bodyclass %}{% endblock %}{% endblock %}">
-    <form id="csrf-form" action="" method="post">
-        {% csrf_token %}
-    </form>
+    {% csrf_token %}
     {% block body %}
     {% endblock body %}
 
     {% block javascript %}
-    {% include 'FSAEDesigner/lib/_scripts.html' %}
+    {% include 'FSAEDesigner/lib/_auth_scripts.html' %}
+    {% endblock %}
+    {% block extra_js %}
     {% endblock %}
 </body>
 </html>

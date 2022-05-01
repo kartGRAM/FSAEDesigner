@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     "FSAEDesigner",
 ]
+if DEBUG:
+    INSTALLED_APPS.append("livereload")
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
