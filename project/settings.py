@@ -27,12 +27,14 @@ SECRET_KEY = 'django-insecure-&6_yc%m$xbsp8dr-ovp*f*j=#$twzm9t@djq^m&_7e5&=2jxnw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,12 +51,23 @@ if DEBUG:
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # CommonMiddleWareより上に追加
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    CORS_ORIGIN_WHITELIST = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://192.168.43.7:3000",
+    ]
+    CORS_ORIGIN_ALLOW_ALL = False
+    CORS_ALLOW_CREDENTIALS = True
+    CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:3000',]
 
 ROOT_URLCONF = 'project.urls'
 
@@ -128,7 +141,11 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 LOGIN_URL= 'FSAEDesigner:login'
-LOGIN_REDIRECT_URL= 'FSAEDesigner:top'
+if DEBUG:
+    LOGIN_REDIRECT_URL= "FSAEDesigner:react"
+else:
+    LOGIN_REDIRECT_URL= 'FSAEDesigner:top'
+
 LOGOUT_REDIRECT_URL = LOGIN_URL
 
 # Internationalization
@@ -153,3 +170,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SAMESITE = 'None'
+# SESSION_COOKIE_SAMESITE = 'None'

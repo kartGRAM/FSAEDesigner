@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, resolve_url
+from django.middleware.csrf import get_token
 from django.template.loader import render_to_string
 from django.core.signing import BadSignature, SignatureExpired, loads, dumps
 from django.http import HttpResponseBadRequest
@@ -22,6 +23,13 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import get_user_model
 User = get_user_model()
+"""
+このモジュールでは標準的なビューを設定する。
+DRFはviews_drf参照のこと
+セキュリティのため、認証には標準的なセッションを用いる。
+そのため、Topページが呼ばれるまではDjangoの標準的な認証機能を用いる。
+認証が成功し、Topが呼ばれた段階でReactとDRFへ引き継ぐ
+"""
 
 class CommonMixin():
     def get_context_data(self, **kwargs):
@@ -184,3 +192,12 @@ class Top(CommonMixin, LoginRequiredMixin, generic.TemplateView):
         self.url = reverse_lazy('FSAEDesigner:top')
         return super().get(request, *args, **kwargs)
     """
+
+
+@login_required
+def React(request):
+    session_key = request.session.session_key
+    #token = get_token(request)
+    token = request.META["CSRF_COOKIE"]
+    return redirect(f'http://127.0.0.1:3000?session_key={session_key}&'\
+        f'csrf_token={token}')

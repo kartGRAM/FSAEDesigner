@@ -1,11 +1,8 @@
 from django.urls import path
 from . import views
+from . import views_drf as drf
 from django.views.generic.base import TemplateView
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
+from django.conf import settings
 
 app_name = 'FSAEDesigner'
 urlpatterns = [
@@ -23,7 +20,8 @@ urlpatterns = [
     path('email/change/complete/<str:token>/',
          views.EmailChangeComplete, name='email_change_complete'),
 
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('api/check_logged_in/', drf.check_logged_in, name='check_logged_in'),
 ]
+
+if settings.DEBUG:
+    urlpatterns.append(path('react/', views.React, name='react')),
