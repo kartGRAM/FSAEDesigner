@@ -128,7 +128,9 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 LOGIN_URL= 'FSAEDesigner:login'
+LOGIN_REDIRECT_URL= 'FSAEDesigner:top'
 LOGOUT_REDIRECT_URL = LOGIN_URL
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
