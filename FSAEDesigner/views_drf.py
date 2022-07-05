@@ -5,7 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from serializer import GeometryDesignerFileSerializer as gdFileSerializer
+from .serializer import GeometryDesignerFileSerializer as gdFileSerializer
+from .models import GeometryDesignerFile as gdFile
 
 @api_view(['POST'])
 def checkLoggedIn(request, format=None):
@@ -22,3 +23,12 @@ def gdSaveAs(request, format=None):
             serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def gdGetAllUserFiles(request, format=None):
+    user = request.user
+    if request.method == "GET":
+        files = gdFile.objects.filter(user=user)
+        serializer = gdFileSerializer(files, many=True)
+        return Response(serializer.data)

@@ -22,6 +22,7 @@ urlpatterns = [
 
     path('api/check_logged_in/', drf.checkLoggedIn, name='check_logged_in'),
     path('api/gd/save_as/', drf.gdSaveAs, name='gd_save_as'),
+    path('api/gd/get_all_user_files/', drf.gdGetAllUserFiles, name='gd_get_all_user_files'),
 ]
 
 if settings.DEBUG:
