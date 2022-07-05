@@ -20,7 +20,8 @@ urlpatterns = [
     path('email/change/complete/<str:token>/',
          views.EmailChangeComplete, name='email_change_complete'),
 
-    path('api/check_logged_in/', drf.check_logged_in, name='check_logged_in'),
+    path('api/check_logged_in/', drf.checkLoggedIn, name='check_logged_in'),
+    path('api/gd/save_as/', drf.gdSaveAs, name='gd_save_as'),
 ]
 
 if settings.DEBUG:

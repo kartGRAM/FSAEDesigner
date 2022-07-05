@@ -9,6 +9,7 @@ from django.conf import settings
 from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFill
 import secrets
+import hashlib
 
 
 class CustomUserManager(UserManager):
@@ -137,3 +138,53 @@ class User(AbstractBaseUser, PermissionsMixin):
     @ property
     def username(self):
         return self.email
+
+class GeometryDesignerFile(models.Model):
+    SECRET_KEY = 'mdkx9nzw=^d(_h6v=56fjffkjawio`LFEIOJW=ra^e$k+9!s_=pi49@@uyc$v'
+    def get_image_path(self, filename):
+        seed = self.SECRET_KEY + str(self.user.id)
+        prefix = 'geometry-designer-data/'
+        prefix = prefix + str(self.user.id) +hashlib.sha256(seed.encode('utf-8')).hexdigest() + "/"
+
+        root = settings.MEDIA_ROOT.replace(os.sep, '/') + "/"
+        if not os.path.exists(root+prefix):
+            os.mkdir(root + prefix)
+        return prefix + filename
+
+    name = models.CharField(verbose_name="name",max_length=256)
+
+    user = models.ForeignKey(
+        User,
+        verbose_name=_('user'),
+        on_delete=models.CASCADE,
+    )
+
+    # 公開するか
+    is_public= models.BooleanField(
+        _('public'),
+        default=False,
+    )
+
+    # サムネイル
+    thumbnail = ProcessedImageField(upload_to=get_image_path,
+                                 processors=[ResizeToFill(256, 256)],
+                                 format='png',
+                                 blank=True,
+                                 options={'quality': 100})
+    # JSONの中身(ファイル本体)
+    content = models.TextField(verbose_name="content")
+    # 作成日時
+    created = models.DateTimeField(_('created'), default=timezone.now)
+    # 更新日時
+    lastUpdated = models.DateTimeField(_('last updated'), default=timezone.now)
+
+    class Meta:
+        verbose_name = _('GeometryDesignerFile')
+        verbose_name_plural = _('GeometryDesignerFile')
+
+    def clean(self, *args, **kwargs):
+        """
+        if self.favorites.count() > 10:
+            raise ValidationError(f"登録可能な個数は{MAXFAVORITES}です。")
+        """
+        super().clean(*args, **kwargs)
