@@ -152,6 +152,7 @@ class GeometryDesignerFile(models.Model):
         return prefix + filename
 
     name = models.CharField(verbose_name="name",max_length=256)
+    note = models.CharField(verbose_name="note",max_length=1024*4,blank=True)
 
     user = models.ForeignKey(
         User,
