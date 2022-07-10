@@ -9,7 +9,7 @@ from django.conf import settings
 from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFill
 import secrets
-import hashlib
+import glob
 
 
 class CustomUserManager(UserManager):
@@ -140,16 +140,34 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class GeometryDesignerFile(models.Model):
-    SECRET_KEY = 'mdkx9nzw=^d(_h6v=56fjffkjawio`LFEIOJW=ra^e$k+9!s_=pi49@@uyc$v'
     def get_image_path(self, filename):
-        seed = self.SECRET_KEY + str(self.user.id)
-        prefix = 'geometry-designer-data/'
-        prefix = prefix + str(self.user.id) +hashlib.sha256(seed.encode('utf-8')).hexdigest() + "/"
-
+        prefix = 'geometry-designer-data/' + str(self.user.id) + "-"
         root = settings.MEDIA_ROOT.replace(os.sep, '/') + "/"
+        print(root+prefix)
+        folders = glob.glob(root+prefix+"??????????????????????")
+        if len(folders) > 0:
+            dir_hash = folders[0].split("-")[-1]
+            print(dir_hash)
+        else:
+            dir_hash = secrets.token_urlsafe(16)
+        prefix = prefix + dir_hash + "/"
         if not os.path.exists(root+prefix):
             os.mkdir(root + prefix)
         return prefix + filename
+
+        prefix = "robot_log/" + str(self.id)+"-"
+        root = settings.MEDIA_ROOT.replace(os.sep, '/') + "/"
+        if self.dir_hash == "":
+            folders = glob.glob(root+prefix+"????????????????")
+            if len(folders) > 0:
+                self.dir_hash = folders[0].split("-")[-1]
+            else:
+                self.dir_hash = secrets.token_urlsafe(16)
+            self.save()
+        prefix = prefix + self.dir_hash + "/"
+        if not os.path.exists(root+prefix):
+            os.mkdir(root + prefix)
+        return prefix
 
     name = models.CharField(verbose_name="name",max_length=256)
     note = models.CharField(verbose_name="note",max_length=1024*4,blank=True)
@@ -168,7 +186,7 @@ class GeometryDesignerFile(models.Model):
 
     # サムネイル
     thumbnail = ProcessedImageField(upload_to=get_image_path,
-                                 processors=[ResizeToFill(256, 256)],
+                                 processors=[ResizeToFill(512, 512)],
                                  format='png',
                                  blank=True,
                                  options={'quality': 100})

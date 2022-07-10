@@ -42,7 +42,7 @@ def gdSaveAs(request, format=None):
                   partial=True)
                 if serializer.is_valid():
                     serializer.save()
-                    return Response({}, status=status.HTTP_202_ACCEPTED)
+                    return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
                 print(serializer.errors)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
