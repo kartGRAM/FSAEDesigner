@@ -9,7 +9,7 @@ class GeometryDesignerFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = GeometryDesignerFile
         fields = ('id','name','note', 'user', 'is_public','thumbnail',
-         'content',  "lastUpdated", "overwrite", "clientLastUpdated")
+         'content',  "lastUpdated","created", "overwrite", "clientLastUpdated")
         read_only_fields = ('created',)
         extra_kwargs = {
             'overwrite': {'write_only': True},
